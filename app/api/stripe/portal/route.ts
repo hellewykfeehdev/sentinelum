@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { env } from '@/lib/env';
-import { stripe } from '@/lib/stripe/client';
+import { getStripe } from '@/lib/stripe/client';
 import { requireWorkspace } from '@/lib/workspaces';
 
 export const runtime = 'nodejs';
@@ -12,6 +12,7 @@ export async function POST() {
       return NextResponse.json({ error: 'Stripe customer not found' }, { status: 400 });
     }
 
+    const stripe = getStripe();
     const session = await stripe.billingPortal.sessions.create({
       customer: workspace.stripe_customer_id,
       return_url: `${env.NEXT_PUBLIC_APP_URL}/dashboard/billing`

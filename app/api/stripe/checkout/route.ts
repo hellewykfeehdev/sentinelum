@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { assertBillingEnv, env, stripePriceAnnual, stripePriceUsage } from '@/lib/env';
-import { stripe } from '@/lib/stripe/client';
+import { getStripe } from '@/lib/stripe/client';
 import { createServiceClient } from '@/lib/supabase/service';
 import { requireWorkspace } from '@/lib/workspaces';
 
@@ -11,6 +11,7 @@ export async function POST() {
     assertBillingEnv();
     const { user, workspace } = await requireWorkspace();
     const supabase = createServiceClient();
+    const stripe = getStripe();
 
     let customerId = workspace.stripe_customer_id as string | null;
     if (!customerId) {

@@ -1,7 +1,15 @@
 import Stripe from 'stripe';
-import { env } from '@/lib/env';
+import { requireEnv } from '@/lib/env';
 
-export const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
-  apiVersion: '2026-02-25.clover' as Stripe.LatestApiVersion,
-  typescript: true
-});
+let stripeClient: Stripe | null = null;
+
+export function getStripe() {
+  if (!stripeClient) {
+    stripeClient = new Stripe(requireEnv('STRIPE_SECRET_KEY'), {
+      apiVersion: '2026-02-25.clover' as Stripe.LatestApiVersion,
+      typescript: true
+    });
+  }
+
+  return stripeClient;
+}

@@ -1,5 +1,5 @@
 import crypto from 'node:crypto';
-import { secrets } from '@/lib/security/secrets';
+import { getSecrets } from '@/lib/security/secrets';
 
 export function sha256(value: string) {
   return crypto.createHash('sha256').update(value).digest('hex');
@@ -32,12 +32,14 @@ export function createApiKey(mode: 'live' | 'test' = 'live') {
 }
 
 export function hashApiKey(rawKey: string) {
+  const secrets = getSecrets();
   return sha256(`${rawKey}.${secrets.API_KEY_HASH_SECRET}`);
 }
 
 export function signCertificatePayload(payload: unknown) {
   const normalized = normalizeForHash(payload);
   const payloadHash = sha256(normalized);
+  const secrets = getSecrets();
   const signature = hmacSha256(payloadHash, secrets.CERTIFICATE_SIGNING_SECRET);
   const certificateHash = sha256(`${payloadHash}.${signature}`);
 

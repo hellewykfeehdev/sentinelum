@@ -1,8 +1,10 @@
-import { env } from '@/lib/env';
+import { requireMinLengthEnv } from '@/lib/env';
 
-export const secrets = {
-  CERTIFICATE_SIGNING_SECRET: env.CERTIFICATE_SIGNING_SECRET,
-  API_KEY_HASH_SECRET: env.API_KEY_HASH_SECRET,
-  WEBHOOK_SIGNING_SECRET: env.WEBHOOK_SIGNING_SECRET,
-  ENCRYPTION_KEY: env.ENCRYPTION_KEY
-};
+export function getSecrets() {
+  return {
+    CERTIFICATE_SIGNING_SECRET: requireMinLengthEnv('CERTIFICATE_SIGNING_SECRET', 32),
+    API_KEY_HASH_SECRET: requireMinLengthEnv('API_KEY_HASH_SECRET', 32),
+    WEBHOOK_SIGNING_SECRET: requireMinLengthEnv('WEBHOOK_SIGNING_SECRET', 32),
+    ENCRYPTION_KEY: requireMinLengthEnv('ENCRYPTION_KEY', 32)
+  };
+}

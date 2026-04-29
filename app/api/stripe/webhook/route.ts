@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { env } from '@/lib/env';
-import { stripe } from '@/lib/stripe/client';
+import { requireEnv } from '@/lib/env';
+import { getStripe } from '@/lib/stripe/client';
 import { createServiceClient } from '@/lib/supabase/service';
 import {
   handleCheckoutCompleted,
@@ -22,7 +22,11 @@ export async function POST(req: Request) {
 
   let event: Stripe.Event;
   try {
-    event = stripe.webhooks.constructEvent(rawBody, signature, env.STRIPE_WEBHOOK_SECRET);
+    event = getStripe().webhooks.constructEvent(
+      rawBody,
+      signature,
+      requireEnv('STRIPE_WEBHOOK_SECRET')
+    );
   } catch {
     return NextResponse.json({ error: 'Invalid webhook signature' }, { status: 400 });
   }

@@ -1,5 +1,5 @@
 import { createServiceClient } from '@/lib/supabase/service';
-import { stripe } from '@/lib/stripe/client';
+import { getStripe } from '@/lib/stripe/client';
 import { stripePriceUsage } from '@/lib/env';
 import type { WorkspaceRecord } from '@/lib/certificates/schema';
 
@@ -47,6 +47,7 @@ export async function recordCertificateUsage(params: {
 
   if (isExtraUsage && params.workspace.stripe_subscription_id && stripePriceUsage) {
     try {
+      const stripe = getStripe();
       const subscription = await stripe.subscriptions.retrieve(
         params.workspace.stripe_subscription_id
       );
